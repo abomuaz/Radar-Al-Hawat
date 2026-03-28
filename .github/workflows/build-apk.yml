@@ -1,0 +1,23 @@
+name: Build APK
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build with Help
+        run: echo "Generating APK for Radar Al-Hawat..."
+        
+      # هذه الخطوة ستقوم بإنتاج ملف التطبيق لاحقاً عند وضع ملفات البرمجة
+
