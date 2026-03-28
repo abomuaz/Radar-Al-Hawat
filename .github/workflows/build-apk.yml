@@ -1,0 +1,20 @@
+name: Build Radar
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create Package
+        run: zip -r Radar_Hawat.zip index.html
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: Radar-Download
+          path: Radar_Hawat.zip
