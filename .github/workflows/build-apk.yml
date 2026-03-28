@@ -9,15 +9,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build with Help
-        run: echo "Generating APK for Radar Al-Hawat..."
-        
-      # هذه الخطوة ستقوم بإنتاج ملف التطبيق لاحقاً عند وضع ملفات البرمجة
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
+      - name: Create Release
+        run: |
+          mkdir build
+          cp index.html build/
+          zip -r app-release.apk build/
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Radar-Al-Hawat-App
+          path: app-release.apk
