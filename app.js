@@ -1018,7 +1018,7 @@ async function useMyLocation() {
             const dataset = await fetchLocationDataset(location);
             renderDashboard(dataset);
             saveCachedSnapshot(dataset);
-            setStatus("تم تحميل بيانات موقعك الحالي.", "success");
+            finalizeDashboardStatus(dataset, "تم تحميل بيانات موقعك الحالي.");
         } catch (error) {
             if (!restoreCachedSnapshot()) {
                 setStatus(error.message || "تعذر تحميل بيانات الموقع الحالي.", "error");
@@ -1195,7 +1195,7 @@ async function bootstrap() {
             const dataset = await fetchLocationDataset(favorite);
             renderDashboard(dataset);
             saveCachedSnapshot(dataset);
-            setStatus("تم تحميل موقعك المفضل تلقائيًا.", "success");
+            finalizeDashboardStatus(dataset, "تم تحميل موقعك المفضل تلقائيًا.");
         } else {
             await loadByQuery(settings.defaultCity);
         }
