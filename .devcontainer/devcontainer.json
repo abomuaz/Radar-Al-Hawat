@@ -1,0 +1,12 @@
+{
+  "name": "Radar-Al-Hawat",
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": {
+      "label": "Radar Al-Hawat Preview",
+      "onAutoForward": "openBrowser",
+      "protocol": "http"
+    }
+  },
+  "postAttachCommand": "bash -lc 'nohup python3 -m http.server 8000 >/tmp/radar-preview.log 2>&1 &'"
+}

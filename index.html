@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="رادار الحوات: تطبيق ويب عربي احترافي لمتابعة الطقس والبحر، مؤشر الصيد، والخريطة الساحلية.">
+    <meta name="theme-color" content="#041824">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>رادار الحوات</title>
+    <link rel="manifest" href="manifest.webmanifest?v=8">
+    <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css?v=8">
+</head>
+<body>
+    <div class="app-shell">
+        <header class="hero panel">
+            <div class="brand-row">
+                <div class="logo-mark">🎣</div>
+                <div>
+                    <p class="eyebrow">Radar Al-Hawat</p>
+                    <h1>رادار الحوات</h1>
+                    <p id="todayInfoText" class="hero-copy">جاري تحديث اليوم والتاريخين الهجري والميلادي والوقت الحالي...</p>
+                </div>
+            </div>
+            <div class="hero-actions">
+                <button type="button" id="installBtn" class="action-pill accent" hidden>تثبيت التطبيق</button>
+                <a id="openMapLink" class="action-pill" target="_blank" rel="noopener noreferrer" href="https://www.openstreetmap.org/">فتح في الخرائط</a>
+            </div>
+        </header>
+
+        <section class="panel search-panel">
+            <form id="searchForm" class="search-form">
+                <label class="sr-only" for="cityInput">ابحث عن مدينة</label>
+                <input id="cityInput" name="city" type="text" placeholder="مثال: جدة، دبي، الإسكندرية">
+                <button type="submit">بحث</button>
+                <button type="button" class="secondary" id="locateBtn">موقعي</button>
+                <button type="button" class="secondary" id="demoBtn">تجربة سريعة</button>
+            </form>
+            <div class="search-meta">
+                <p id="statusText" class="status-chip">جاري تجهيز التطبيق...</p>
+                <p id="savedSpotText" class="saved-spot"></p>
+            </div>
+        </section>
+
+        <main class="dashboard">
+            <div class="primary-stack">
+                <section class="panel overview-panel">
+                    <div class="panel-header">
+                        <div>
+                            <p class="section-kicker">الموقع الحالي</p>
+                            <h2 id="locationName">--</h2>
+                        </div>
+                        <p id="currentTime" class="timestamp">--</p>
+                    </div>
+
+                    <div class="metrics-scroll">
+                        <div class="metrics-grid">
+                            <article class="metric-card">
+                                <p class="metric-label">الحرارة</p>
+                                <p id="tempValue" class="metric-value">--</p>
+                            </article>
+                            <article class="metric-card">
+                                <p class="metric-label">سرعة الرياح</p>
+                                <p id="windValue" class="metric-value">--</p>
+                            </article>
+                            <article class="metric-card">
+                                <p class="metric-label">اتجاه الرياح</p>
+                                <p id="windDirValue" class="metric-value">--</p>
+                            </article>
+                            <article class="metric-card">
+                                <p class="metric-label">ارتفاع الموج</p>
+                                <p id="waveValue" class="metric-value">--</p>
+                            </article>
+                            <article class="metric-card">
+                                <p class="metric-label">حرارة سطح البحر</p>
+                                <p id="seaValue" class="metric-value">--</p>
+                            </article>
+                            <article class="metric-card">
+                                <p class="metric-label">فترة الموج</p>
+                                <p id="wavePeriodValue" class="metric-value">--</p>
+                            </article>
+                            <article class="metric-card">
+                                <p class="metric-label">الشروق</p>
+                                <p id="sunriseValue" class="metric-value">--</p>
+                            </article>
+                            <article class="metric-card">
+                                <p class="metric-label">الغروب</p>
+                                <p id="sunsetValue" class="metric-value">--</p>
+                            </article>
+                            <article class="metric-card wide-card">
+                                <p class="metric-label">حالة المدّ</p>
+                                <p id="tideValue" class="metric-value">--</p>
+                            </article>
+                        </div>
+                    </div>
+
+                </section>
+
+                <section class="panel hourly-panel">
+                    <div class="hourly-header">
+                        <div>
+                            <p class="section-kicker">طقس اليوم الحالي</p>
+                            <h3>توقعات الـ24 ساعة القادمة</h3>
+                        </div>
+                    </div>
+                    <div id="hourlyScrollWrap" class="hourly-scroll">
+                        <div id="hourlyForecastGrid" class="hourly-grid"></div>
+                    </div>
+                </section>
+
+                <div class="insights-row">
+                    <section class="panel score-panel">
+                        <div class="panel-header">
+                            <div>
+                                <p class="section-kicker">تقييم الخروج</p>
+                                <h3>مؤشر الصيد</h3>
+                            </div>
+                        </div>
+                        <div class="score-wrap">
+                            <div id="scoreRing" class="score-ring" style="--score: 0;">
+                                <div>
+                                    <strong id="scoreValue">--</strong>
+                                    <small>/100</small>
+                                </div>
+                            </div>
+                            <div>
+                                <p id="scoreLabel" class="score-label">--</p>
+                                <p id="scoreSummary" class="muted">سيظهر هنا تقييم الحالة الحالية.</p>
+                            </div>
+                        </div>
+                        <ul id="reasonsList" class="reasons-list"></ul>
+                    </section>
+
+                    <section class="panel alerts-panel">
+                        <div class="panel-header">
+                            <div>
+                                <p class="section-kicker">تنبيهات البحر</p>
+                                <h3>التحذيرات والجاهزية</h3>
+                            </div>
+                        </div>
+                        <div id="alertsList" class="alerts-list"></div>
+                    </section>
+
+                    <section class="panel times-panel">
+                        <div class="panel-header">
+                            <div>
+                                <p class="section-kicker">أفضل الفترات</p>
+                                <h3>نوافذ الصيد المقترحة</h3>
+                            </div>
+                        </div>
+                        <ul id="bestTimesList" class="best-times-list"></ul>
+                    </section>
+                </div>
+
+                <section class="panel map-panel">
+                    <div class="panel-header">
+                        <div>
+                            <p class="section-kicker">الخريطة الساحلية</p>
+                            <h3>عرض مباشر للموقع</h3>
+                        </div>
+                    </div>
+                    <div class="map-wrap">
+                        <iframe id="mapFrame" title="خريطة الموقع" loading="lazy" src="about:blank"></iframe>
+                    </div>
+                    <div class="map-notes">
+                        <p id="coordsText" class="map-note">--</p>
+                        <p id="marineStateText" class="map-note">--</p>
+                    </div>
+                </section>
+
+                <section class="panel forecast-panel">
+                    <div class="panel-header">
+                        <div>
+                            <p class="section-kicker">الـ16 يومًا القادمة</p>
+                            <h3>التوقعات اليومية الموسعة</h3>
+                            <p id="forecastSummaryText" class="muted forecast-summary">سيظهر هنا اليوم الأنسب المتوقع خلال الـ16 يومًا القادمة.</p>
+                        </div>
+                        <div class="slider-controls">
+                            <button type="button" id="forecastPrevBtn" class="slider-btn" aria-label="مرر لليمين">→</button>
+                            <button type="button" id="forecastNextBtn" class="slider-btn" aria-label="مرر لليسار">←</button>
+                        </div>
+                    </div>
+                    <div id="forecastScrollWrap" class="forecast-scroll">
+                        <div id="forecastGrid" class="forecast-grid forecast-slider"></div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <section class="info-grid">
+            <section class="panel checklist-panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="section-kicker">قبل الانطلاق</p>
+                        <h3>قائمة التجهيز</h3>
+                    </div>
+                </div>
+                <div id="checklistGrid" class="checklist-grid"></div>
+                <div class="action-row">
+                    <button id="saveSpotBtn" type="button">حفظ الموقع الحالي</button>
+                    <button id="shareBtn" type="button" class="ghost">مشاركة التطبيق</button>
+                </div>
+            </section>
+
+            <section class="panel settings-panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="section-kicker">الإعدادات</p>
+                        <h3>خيارات العرض والتنبيهات</h3>
+                    </div>
+                </div>
+                <form id="settingsForm" class="settings-form">
+                    <label>
+                        <span>المدينة الافتراضية</span>
+                        <input id="defaultCityInput" type="text" placeholder="مثال: Jeddah">
+                    </label>
+                    <label>
+                        <span>حد تنبيه الرياح (كم/س)</span>
+                        <input id="windThresholdInput" type="number" min="10" max="80" step="1">
+                    </label>
+                    <label>
+                        <span>حد تنبيه الموج (متر)</span>
+                        <input id="waveThresholdInput" type="number" min="0.5" max="5" step="0.1">
+                    </label>
+                    <div class="setting-actions">
+                        <button type="submit">حفظ الإعدادات</button>
+                        <button type="button" id="resetSettingsBtn" class="outline">إعادة الافتراضي</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="panel about-panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="section-kicker">حول التطبيق</p>
+                        <h3>ما الجديد في التطبيق</h3>
+                    </div>
+                    <span class="version-badge">v2.0</span>
+                </div>
+                <ul class="about-list">
+                    <li>التطبيق لمساعدة صيادي الأسماك لمعرفة الوقت المثالي لصيد السمك فهو خير رفيق للحوات في رحلته القادمة.</li>
+                    <li>يختصر التطبيق الجهد والوقت في التنقل مابين التطبيقات المختلفة لمعرفة الوقت المناسب للصيد والإبحار.</li>
+                    <li>ربما توجد أخطاء في قراءة البيانات وتحليلها يرجى متابعة الجهات المحلية المزودة بالطقس.</li>
+                    <li>الحقوق محفوظة لمصمم التطبيق أبومعاذ <strong>Abomuaz</strong>.</li>
+                </ul>
+            </section>
+        </section>
+
+        <footer class="footer">
+            <p>رادار الحوات — تجربة عرض واضحة، سريعة، وجاهزة قبل الاعتماد النهائي.</p>
+        </footer>
+    </div>
+
+    <noscript>هذا التطبيق يحتاج JavaScript ليعرض البيانات.</noscript>
+    <script src="app.js?v=8"></script>
+</body>
+</html>

@@ -1,4 +1,5 @@
 name: Build Radar
+
 on:
   push:
     branches: [ "main" ]
@@ -11,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Create Package
-      run: zip -r Radar_Hawat.zip .
+        run: zip -r Radar_Hawat.zip . -x ".git/*"
 
       - name: Upload
         uses: actions/upload-artifact@v4
